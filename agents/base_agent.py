@@ -8,7 +8,10 @@ class BaseAgent:
     def select_action(self):
         return random.sample(self.actions)
 
-    def update(self):
+    def save(self, path):
+        pass
+
+    def load(self, path):
         pass
 
     

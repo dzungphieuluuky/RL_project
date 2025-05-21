@@ -1,5 +1,4 @@
-import utils
-from base_agent import BaseAgent
+from agents.base_agent import BaseAgent
 from utils.getter import get_best_action
 
 import random
@@ -20,20 +19,24 @@ class QLearningAgent(BaseAgent):
 
     def select_action(self, state):
         if random.randint(0, 1) < self.epsilon:
-            return random.choice(self.actions)
+            return random.randint(0, self.action_space - 1)
         else:
             best_action = get_best_action(self.q_table, state)
             return best_action
     
     def update(self, state, action, reward, next_state):
         old_val = self.q_table[(state, action)]
-        target_val = max(self.q_table[(next_state, )])
+        target_val = 0
+        for current_state, current_action in self.q_table:
+            if current_state != next_state:
+                continue
+            target_val = max(target_val, self.q_table[(current_state, current_action)])
         self.q_table[(state, action)] = (1 - self.alpha) * old_val + self.alpha * (reward + self.gamma * target_val)
 
     def decay_epsilon(self):
         self.epsilon *= self.epsilon_decay
 
-    def train(self, threshold = 1e-3):
+    def train(self, num_episodes = None, threshold = 1e-8):
         episode = 1
         different_val = None
         while True:
@@ -56,8 +59,10 @@ class QLearningAgent(BaseAgent):
                     different_val = abs(new_val - old_val)
                 else: different_val = min(different_val, abs(new_val - old_val))
                 state = next_state
-            
-            if different_val <= threshold:
+            if num_episodes is not None and episode == num_episodes:
+                break
+            episode += 1
+            if num_episodes is None and different_val <= threshold:
                 break
         print(f'Training successfully!')
             
