@@ -8,7 +8,7 @@ A simple implementation of reinforcement learning algorithms based on "Reinforce
 - **Modular Architecture**: Clean separation between agents, utilities, and neural networks.
 - **PyTorch Integration**: Neural network support for deep RL algorithms.
 - **Extensible Design**: Easy to add new algorithms and environments.
-- **Educational Focus**: Well-documented code perfect for learning RL concepts
+- **Educational Focus**: Well-documented code perfect for learning RL concepts.
 
 ## 📁 Project Structure
 
@@ -41,13 +41,13 @@ RL_project/
 - **Temporal Difference (TD)**: Direct value function learning.
 
 ### Multi-Armed Bandits
-- **Simple Bandit**: ε-greedy action selection for stateless environments
+- **Simple Bandit**: ε-greedy action selection for stateless environments.
 
 ## 🛠️ Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/lazy-potato/RL_project.git
+git clone https://github.com/dzungphieuluuky/RL_project.git
 cd RL_project
 ```
 
@@ -70,7 +70,7 @@ env = gym.make('FrozenLake-v1')
 # Initialize agent
 agent = QLearningAgent(
     env=env,
-    alpha=0.1,      # Learning rate
+    alpha=0.1,      # Learning rate / Step size
     gamma=0.99,     # Discount factor
     epsilon=1.0,    # Exploration rate
     epsilon_decay=0.995
@@ -136,10 +136,6 @@ Helper functions for Q-table operations:
 ### Double Q-Learning
 - **Advantage**: Reduces overestimation bias
 - **Method**: Maintains two Q-tables, alternately updated
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 ## 📄 License
 
