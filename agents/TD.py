@@ -10,7 +10,7 @@ class TDAgent(BaseAgent):
         self.gamma = gamma
 
         self.action_space = self.env.action_space.n
-        self.values = np.random.random(self.action_space)
+        self.values = np.zeros(self.env.observation_space.n)
         
     def select_action(self):
         return np.argmax(self.policy)

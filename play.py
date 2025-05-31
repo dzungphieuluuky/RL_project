@@ -1,6 +1,5 @@
 from agents.simple_bandit import SimpleBandit
 import argparse
-import numpy as np
 
 def main():
     parser = argparse.ArgumentParser(description="Play a simple bandit game.")

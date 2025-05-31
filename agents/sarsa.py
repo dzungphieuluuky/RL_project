@@ -1,8 +1,8 @@
-from base_agent import BaseAgent
-from collections import defaultdict
-from utils.getter import get_best_action
 import random
 import numpy as np
+
+from base_agent import BaseAgent
+from utils.getter import get_best_action
 
 class SARSAAgent(BaseAgent):
     def __init__(self, env, alpha = 0.01, gamma = 0.99, epsilon = 1):
@@ -13,7 +13,7 @@ class SARSAAgent(BaseAgent):
         self.gamma = gamma
         self.epsilon = epsilon
 
-        self.q_table = np.random.random((self.action_space, self.observation_space))
+        self.q_table = np.zeros((self.observation_space, self.action_space))
 
     def select_action(self, state):
         if random.randint(0, 1) < self.epsilon:

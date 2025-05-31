@@ -1,10 +1,9 @@
-from .base_agent import BaseAgent
-from collections import defaultdict, Counter
-from utils.getter import get_best_action, get_best_value
-
 import random
 import numpy as np
 
+from .base_agent import BaseAgent
+from collections import defaultdict, Counter
+from utils.getter import get_best_action, get_best_value
 class DPAgent(BaseAgent):
     def __init__(self, env, gamma = 0.99, epsilon = 0.7):
         super().__init__()
@@ -15,10 +14,8 @@ class DPAgent(BaseAgent):
         self.gamma = gamma
         self.epsilon = epsilon
 
-        self.q_table = defaultdict(float)
-        # q_table[(state, action)] = value
-        self.reward_table = defaultdict(float)
-        # reward_table[(state, action, next_state)] = reward
+        self.q_table = np.zeros((self.observation_space, self.action_space))
+        self.reward_table = np.zeros((self.observation_space, self.action_space, self.observation_space))
         self.transition_table = defaultdict(Counter)
         # transition_table[(state, action)] = {next_state: number of times get here}
 
@@ -39,7 +36,7 @@ class DPAgent(BaseAgent):
                     reward = self.reward_table[(state, action, next_state)]
                     new_val = reward + self.gamma * get_best_value(self.q_table, next_state)
                     action_val += (count / total_count) * new_val
-                self.q_table[(state, action)] = action_val
+                self.q_table[state][action] = action_val
 
     def load_table(self, path):
         self.q_table = np.load(path)
