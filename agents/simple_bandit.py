@@ -1,5 +1,6 @@
 import numpy as np
 import random
+from torch.utils.tensorboard.writer import SummaryWriter
 
 from .base_agent import BaseAgent
 
@@ -28,6 +29,8 @@ class SimpleBandit(BaseAgent):
         return np.argmax(ucb_values)
     
     def play(self, num_episodes = None, ucb=False):
+        writer = SummaryWriter(comment=f"SimpleBandit_{self.number_of_actions}_actions")
+
         if num_episodes is None:
             while True:
                 if ucb:
@@ -37,6 +40,9 @@ class SimpleBandit(BaseAgent):
                 reward = self.bandit(action)
                 self.action_choice[action] += 1
                 self.q[action] = self.q[action] + (reward - self.q[action])/self.action_choice[action]
+                writer.add_scalar('Q-value', self.q[action], self.action_choice[action])
+                writer.add_scalar('Reward', reward, self.action_choice[action])
+                writer.add_scalar('Action Choice', self.action_choice[action], self.action_choice[action])
                 print(f"Action: {action}, Reward: {reward}, Q-value: {self.q[action]}")
         else:
             for i in range(num_episodes):
@@ -47,6 +53,11 @@ class SimpleBandit(BaseAgent):
                 reward = self.bandit(action)
                 self.action_choice[action] += 1
                 self.q[action] = self.q[action] + (reward - self.q[action])/self.action_choice[action]
+                writer.add_scalar('Q-value', self.q[action], i)
+                writer.add_scalar('Reward', reward, i)
+                writer.add_scalar('Action Choice', self.action_choice[action], i)
                 print(f"Episode {i+1}: Action: {action}, Reward: {reward}, Q-value: {self.q[action]}")
                 if i % 100 == 0:
                     print(f"Progress: {i}/{num_episodes}")
+        writer.close()
+        print("Training completed.")

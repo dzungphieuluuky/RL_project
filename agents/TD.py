@@ -1,7 +1,6 @@
-from base_agent import BaseAgent
-
 import numpy as np
 
+from base_agent import BaseAgent
 class TDAgent(BaseAgent):
     def __init__(self, env, policy, alpha = 0.01, gamma = 0.99):
         super().__init__(env)

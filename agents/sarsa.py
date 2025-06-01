@@ -2,7 +2,6 @@ import random
 import numpy as np
 
 from base_agent import BaseAgent
-from utils.getter import get_best_action
 
 class SARSAAgent(BaseAgent):
     def __init__(self, env, alpha = 0.01, gamma = 0.99, epsilon = 1):
@@ -19,7 +18,7 @@ class SARSAAgent(BaseAgent):
         if random.randint(0, 1) < self.epsilon:
             return random.choice(self.actions)
         else:
-            best_action = get_best_action(self.q_table, state)
+            best_action = np.argmax(self.q_table[state])
             return best_action
     
     def update(self, state, action, reward, next_state, next_action):
