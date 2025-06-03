@@ -28,7 +28,7 @@ class SimpleBandit(BaseAgent):
         ucb_values = self.q + np.sqrt(2 * np.log(np.sum(self.action_choice)) / (self.action_choice + 1e-5))
         return np.argmax(ucb_values)
     
-    def play(self, num_episodes = None, ucb=False):
+    def play(self, num_episodes = None, ucb = False, log = False):
         writer = SummaryWriter(comment=f"SimpleBandit_{self.number_of_actions}_actions")
 
         if num_episodes is None:
@@ -40,9 +40,10 @@ class SimpleBandit(BaseAgent):
                 reward = self.bandit(action)
                 self.action_choice[action] += 1
                 self.q[action] = self.q[action] + (reward - self.q[action])/self.action_choice[action]
-                writer.add_scalar('Q-value', self.q[action], self.action_choice[action])
-                writer.add_scalar('Reward', reward, self.action_choice[action])
-                writer.add_scalar('Action Choice', self.action_choice[action], self.action_choice[action])
+                if log:
+                    writer.add_scalar('Q-value', self.q[action], self.action_choice[action])
+                    writer.add_scalar('Reward', reward, self.action_choice[action])
+                    writer.add_scalar('Action Choice', self.action_choice[action], self.action_choice[action])
                 print(f"Action: {action}, Reward: {reward}, Q-value: {self.q[action]}")
         else:
             for i in range(num_episodes):
@@ -53,11 +54,13 @@ class SimpleBandit(BaseAgent):
                 reward = self.bandit(action)
                 self.action_choice[action] += 1
                 self.q[action] = self.q[action] + (reward - self.q[action])/self.action_choice[action]
-                writer.add_scalar('Q-value', self.q[action], i)
-                writer.add_scalar('Reward', reward, i)
-                writer.add_scalar('Action Choice', self.action_choice[action], i)
+                if log:
+                    writer.add_scalar('Q-value', self.q[action], i)
+                    writer.add_scalar('Reward', reward, i)
+                    writer.add_scalar('Action Choice', self.action_choice[action], i)
                 print(f"Episode {i+1}: Action: {action}, Reward: {reward}, Q-value: {self.q[action]}")
                 if i % 100 == 0:
                     print(f"Progress: {i}/{num_episodes}")
-        writer.close()
+        if log:
+            writer.close()
         print("Training completed.")
