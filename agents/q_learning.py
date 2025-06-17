@@ -8,29 +8,34 @@ class QLearningAgent(BaseAgent):
     def __init__(self, env, alpha = 0.01, gamma = 0.99, epsilon = 1, epsilon_decay = 0.9):
         super().__init__(env)
         self.action_space = self.env.action_space.n
-        self.observation_space = self.env.observation_space.n
+        self.observation_space = len(self.env.observation_space)
         self.alpha = alpha
         self.gamma = gamma
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
 
-        self.q_table = np.zeros((self.observation_space, self.action_space))
+        self.q_table = np.zeros((18, 10, 2, self.action_space))
 
+    def get_state_indices(self, state):
+        player_sum, dealer_card, usable_ace = state
+        return (player_sum - 4, dealer_card - 1, int(usable_ace))
+    
     def select_action(self, state):
-        if random.randint(0, 1) < self.epsilon:
-            return random.randint(0, self.action_space - 1)
+        if np.random.random() < self.epsilon:
+            return self.env.action_space.sample()
         else:
-            best_action = np.argmax(self.q_table[state])
+            indices = self.get_state_indices(state)
+            best_action = np.argmax(self.q_table[indices])
             return best_action
     
     def update(self, state, action, reward, next_state):
-        old_val = self.q_table[state][action]
-        target_val = 0
-        for current_state, current_action in self.q_table:
-            if current_state != next_state:
-                continue
-            target_val = max(target_val, self.q_table[current_state][current_action])
-        self.q_table[state][action] = (1 - self.alpha) * old_val + self.alpha * (reward + self.gamma * target_val)
+        indices = self.get_state_indices(state)
+        old_val = self.q_table[indices][action]
+        
+        next_indices = self.get_state_indices(next_state)
+        next_q_max = np.max(self.q_table[next_indices])
+        target_val = reward + self.gamma * next_q_max
+        self.q_table[indices][action] = (1 - self.alpha) * old_val + self.alpha * target_val
 
     def decay_epsilon(self):
         self.epsilon *= self.epsilon_decay
@@ -53,10 +58,11 @@ class QLearningAgent(BaseAgent):
 
                 if done or truncate:
                     break
-
-                old_val = self.q_table[state][action]
+                
+                indices = self.get_state_indices(state)
+                old_val = self.q_table[indices][action]
                 self.update(state, action, reward, next_state)
-                new_val = self.q_table[state][action]
+                new_val = self.q_table[indices][action]
                 
                 if different_val is None:
                     different_val = abs(new_val - old_val)
