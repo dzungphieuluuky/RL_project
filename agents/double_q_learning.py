@@ -6,15 +6,15 @@ from base_agent import BaseAgent
 class DoubleQLearningAgent(BaseAgent):
     def __init__(self, env, alpha = 0.01, gamma = 0.99, epsilon = 0.7):
         super().__init__(env)
-        self.alpha = alpha
-        self.gamma = gamma
-        self.epsilon = epsilon
+        self.alpha : float = alpha
+        self.gamma : float = gamma
+        self.epsilon : float = epsilon
 
-        self.action_space = self.env.action_space.n
-        self.observation_space = self.env.observation_space.n
+        self.action_space : int = self.env.action_space.n
+        self.observation_space : int = self.env.observation_space.n
 
-        self.q1 = np.random.uniform(low=-1, high=1, size=[self.observation_space, self.action_space])
-        self.q2 = np.random.uniform(low=-1, high=1, size=[self.observation_space, self.action_space])
+        self.q1 : np.array = np.random.uniform(low=-1, high=1, size=[self.observation_space, self.action_space])
+        self.q2 : np.array = np.random.uniform(low=-1, high=1, size=[self.observation_space, self.action_space])
 
     def select_action(self, state):
         if random.randint(0, 1) < self.epsilon:

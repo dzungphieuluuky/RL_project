@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-from agents.base_agent import BaseAgent
+from .base_agent import BaseAgent
 from torch.utils.tensorboard import SummaryWriter
 
 class QLearningAgent(BaseAgent):

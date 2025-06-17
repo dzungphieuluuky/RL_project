@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-from base_agent import BaseAgent
+from .base_agent import BaseAgent
 
 class SARSAAgent(BaseAgent):
     def __init__(self, env, alpha = 0.01, gamma = 0.99, epsilon = 1):
