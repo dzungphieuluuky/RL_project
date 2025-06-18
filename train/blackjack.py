@@ -9,7 +9,7 @@ sys.path.insert(0, parent_dir)
 
 from agents.q_learning import QLearningAgent
 
-def train_blackjack():
+def train_blackjack(episodes = 10000):
     agent = QLearningAgent(
         env=gym.make("Blackjack-v1"),
         alpha=0.01,
@@ -17,7 +17,7 @@ def train_blackjack():
         epsilon=1,
         epsilon_decay=0.999
     )
-    agent.train(num_episodes=10000, threshold=1e-8, log_interval=100)
+    agent.train(episodes, threshold=1e-8, log_interval=100)
     
     os.makedirs("../models", exist_ok=True)
     agent.save_table("../models/blackjack_q_table.npy")
@@ -35,6 +35,8 @@ def play_blackjack(episodes=10, render=True):
     )
     agent.load_table("models/blackjack_q_table.npy")
     total_reward = 0
+    wins = 0
+
     for _ in range(episodes):
         state, _ = agent.env.reset()
         done = False
@@ -50,6 +52,9 @@ def play_blackjack(episodes=10, render=True):
             state = next_state
         
         total_reward += episode_reward
+        if episode_reward > 0:
+            wins += 1
+            print("Win Game!")
     print("Done playing!")    
 
 def main():
